@@ -9,7 +9,7 @@
 const fs = require('fs');
 const yargs = require('yargs');
 const path = require('path');
-const fastXmlParser = require('fast-xml-parser');
+const {XMLParser, XMLBuilder, XMLValidator} = require('fast-xml-parser');
 const walk = require('./walk-tree') // Formerly walk-folder-tree
 
 var options  = yargs
@@ -157,7 +157,8 @@ async function collateFile(pathname) {
 	pathname = pathname.replace(/\\/g, '/');	// Normalize path
 
 	var xmlDoc = fs.readFileSync(pathname, 'utf8');
-	var xml = fastXmlParser.parse(xmlDoc);	// Check syntax
+        const parser = new XMLParser();
+	var xml = parser.parse(xmlDoc);	// Check syntax
 
 	var id = findAll(xml, '^ResourceID$');
 	var resourcePath = makeResourcePath(options.base, id[0]);

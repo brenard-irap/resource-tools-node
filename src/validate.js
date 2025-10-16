@@ -12,7 +12,7 @@
 const fs = require('fs');
 const yargs = require('yargs');
 const path = require('path');
-const fastXmlParser = require('fast-xml-parser');
+const {XMLParser, XMLBuilder, XMLValidator} = require('fast-xml-parser');
 const request = require('needle');
 const walk = require('./walk-tree');   // Formerly walk-folder-tree
 const libxml = require('libxmljs2');
@@ -118,7 +118,7 @@ async function getSchema(version) {
 	var url = options.service + "/spase-" + version + ".xsd"; 
 	try {
 		var resp = await request('get', url);
-    return resp.body;
+    return resp.body.toString('utf8');
 	} catch(e) {
 		console.log("Unable to retrieve schema from: " + url);
 		return e;
@@ -131,7 +131,7 @@ async function getSchematron(version) {
 	var url = options.service + "/spase-" + version + ".sch"; 
 	try {
 		var resp = await request('get', url);
-    return resp.body;
+    return resp.body.toString('utf8');
 	} catch(e) {
 		console.log("Unable to retrieve schema from: " + url);
 		return e;
@@ -144,7 +144,8 @@ async function validateFile(pathname) {
 	var xmlDoc = fs.readFileSync(pathname, 'utf8');
 	var xml = libxml.parseXml(xmlDoc);
   var rules = null;
-	var result = fastXmlParser.parse(xmlDoc);	// Check syntax
+        const parser = new XMLParser();
+	var result = parser.parse(xmlDoc);	// Check syntax
 	var valid = true;
   
 	// Get Schema
@@ -152,7 +153,7 @@ async function validateFile(pathname) {
 	if(options.schema != null) {	// Read from file
 		if(options.schema.startsWith("http")) {
 			var resp = await request('get', options.schema);
-      xsdDoc = resp.body;
+      xsdDoc = resp.body.toString('utf8');
 		} else {	// Local file
 			xsdDoc = fs.readFileSync(options.schema, 'utf8');
 		}
@@ -165,7 +166,7 @@ async function validateFile(pathname) {
 	if(options.schematron != null) {	// Read from file
 		if(options.schematron.startsWith("http")) {
 			var resp = await request('get', options.schematron);
-      schDoc = resp.body;
+      schDoc = resp.body.toString('utf8');
 		} else {	// Local file
 			schDoc = fs.readFileSync(options.schematron, 'utf8');
 		}

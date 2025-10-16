@@ -6,7 +6,7 @@
 **/
 const fs = require('fs');
 const yargs = require('yargs');
-const fastXmlParser = require('fast-xml-parser');
+const {XMLParser, XMLBuilder, XMLValidator} = require('fast-xml-parser');
 
 var options  = yargs
 	.version('1.0.2')
@@ -507,7 +507,8 @@ var writeReference = function(pathname) {
 	if(options.verbose) { console.log('Parsing: ' + pathname); }
 		
 	var xmlDoc = fs.readFileSync(pathname, 'utf8');
-	var content = fastXmlParser.parse(xmlDoc);	// Check syntax
+        const parser = new XMLParser();
+	var content = parser.parse(xmlDoc);	// Check syntax
 	
 	var resource = getResource(content);
 	if( ! resource) {

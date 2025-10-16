@@ -13,7 +13,7 @@
 const fs = require('fs');
 const path = require('path');
 const yargs = require('yargs');
-const fastXmlParser = require('fast-xml-parser');
+const {XMLParser, XMLBuilder, XMLValidator} = require('fast-xml-parser');
 const ResourceProfile = require('./ResourceProfile.js');
 const duration = require("tinyduration")
 
@@ -194,7 +194,8 @@ var makeProfile = function(pathname)
   list.forEach(async function(filename) {
     var fullpath = path.join(pathname, filename);
     var xmlDoc = fs.readFileSync(fullpath, 'utf8');
-    var content = fastXmlParser.parse(xmlDoc);	// Check syntax
+    const parser = new XMLParser();
+    var content = parser.parse(xmlDoc);	// Check syntax
     var profile = new ResourceProfile(options.lookup);
     
     profile.version = content.Spase.Version;

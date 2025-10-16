@@ -7,7 +7,7 @@
 **/
 const fs = require('fs');
 const yargs = require('yargs');
-const fastXmlParser = require('fast-xml-parser');
+const {XMLParser, XMLBuilder, XMLValidator} = require('fast-xml-parser');
 
 // Configure the app
 var options  = yargs
@@ -536,7 +536,8 @@ var writeRequest = function(pathname) {
 	if(options.verbose) { console.log('Parsing: ' + pathname); }
 		
 	var xmlDoc = fs.readFileSync(pathname, 'utf8');
-	var content = fastXmlParser.parse(xmlDoc);	// Check syntax
+        const parser = new XMLParser();
+	var content = parser.parse(xmlDoc);	// Check syntax
 	
 	var resource = getResource(content);
 	if( ! resource) {
@@ -630,7 +631,8 @@ var main = function(args)
 	if(options.verbose) { console.log('Parsing: ' + pathname); }
 		
 	var xmlDoc = fs.readFileSync(pathname, 'utf8');
-	var content = fastXmlParser.parse(xmlDoc);	// Check syntax
+        const parser = new XMLParser();
+	var content = parser.parse(xmlDoc);	// Check syntax
 	
 	var resource = getResource(content);
 	if( ! resource) {

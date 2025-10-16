@@ -7,8 +7,7 @@
 
 const fs = require('fs');
 const yargs = require('yargs');
-const fastXmlParser  = require('fast-xml-parser');
-const XmlGenerater = require('fast-xml-parser').j2xParser;
+const {XMLParser, XMLBuilder, XMLValidator}  = require('fast-xml-parser');
 const path = require('path');
 const walk = require('./walk-tree');  // Formerly walk-folder-tree
 
@@ -84,10 +83,11 @@ var getReleaseDate = function() {
 }
 
 var readXML = function(file) {
+        const parser = new XMLParser();
 	return new Promise(function(resolve, reject) {
 		fs.readFile(file, 'utf8', function(err, data) {
 			if(err) { reject(err); }
-			else { resolve(fastXmlParser.parse(data, { ignoreAttributes : false, parseAttributeValue : false, parseNodeValue : false } ) ); }
+			else { resolve(parser.parse(data, { ignoreAttributes : false, parseAttributeValue : false, parseNodeValue : false } ) ); }
 		})
 	});
 }
@@ -101,7 +101,7 @@ var writeXML = function(file, content) {
 		indentBy: "  ",
 		supressEmptyNode: false
 	};
-	var generator = new XmlGenerater(defaultOptions);
+	var generator = new XMLBuilder(defaultOptions);
 	var xml = generator.parse(content);	
 	
 	if(options.write) {	// Write to original file

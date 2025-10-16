@@ -9,7 +9,7 @@
  */
 
 const axios = require('axios');
-const fastXmlParser = require('fast-xml-parser');
+const {XMLParser, XMLBuilder, XMLValidator} = require('fast-xml-parser');
 
 function ResourceProfile(lookup) {
   this.lookup = lookup;
@@ -219,7 +219,8 @@ ResourceProfile.prototype.setInstrumentID = async function(instrumentID) {
   
   try {
     const response = await axios.get(url);
-    var doc = fastXmlParser.parse(response.data);	// Check syntax
+    const parser = new XMLParser();
+    var doc = parser.parse(response.data);	// Check syntax
   } catch (error) {
     console.error(error);
   }
@@ -248,7 +249,8 @@ ResourceProfile.prototype.setObservatoryInfo = async function(observatoryID)
   
   try {
     const response = await axios.get(url);
-    var doc = fastXmlParser.parse(response.data);	// Check syntax
+    const parser = new XMLParser();
+    var doc = parser.parse(response.data);	// Check syntax
   } catch (error) {
     console.error(error);
   }

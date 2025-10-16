@@ -11,7 +11,7 @@
 const fs = require('fs');
 const yargs = require('yargs');
 const path = require('path');
-const fastXmlParser = require('fast-xml-parser');
+const {XMLParser, XMLBuilder, XMLValidator} = require('fast-xml-parser');
 const walk = require('./walk-tree');  // Formerly walk-folder-tree
  
 // Configure the app
@@ -106,7 +106,8 @@ async function getElement(pathname) {
 	fileCnt++;
 	
 	var xmlDoc = fs.readFileSync(pathname, 'utf8');
-	var content = fastXmlParser.parse(xmlDoc);	// Check syntax
+        const parser = new XMLParser();
+	var content = parser.parse(xmlDoc);	// Check syntax
 	
 	// Check Identifiers
 	var list = findAll(content, tagRegex);
